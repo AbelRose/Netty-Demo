@@ -12,7 +12,7 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
     // 通道就绪
     public void channelActive(ChannelHandlerContext ctx){
         System.out.println("Client:" + ctx);
-        ctx.writeAndFlush(Unpooled.copiedBuffer("还钱", CharsetUtil.UTF_8));
+        ctx.writeAndFlush(Unpooled.copiedBuffer("Give back my money", CharsetUtil.UTF_8));
     }
 
     // 读取数据事件

@@ -33,6 +33,9 @@ public class ChatServerHandler extends SimpleChannelInboundHandler<String> { // 
         // 广播
         for(Channel channel:channels){
             if(channel!=inChannel){
+                /**
+                 * ChannelFuture writeAndFlush(Object msg),将数据写到ChannelPipeline中当前ChannelHandler的下一个ChannelHandler开始处理(出站)
+                 */
                 channel.writeAndFlush("["+inChannel.remoteAddress().toString().substring(1)+"]"+"说："+s+"\n");
             }
         }
