@@ -132,3 +132,73 @@ Google 的 Protobuf
  
 
 sc.pipeline().addLast("decoder",new ProtobufDecoder(BookMessage.Book.getDefaultInstance()));
+
+------
+
+### 自定义RPC
+
+RPC(Remote Procedure Call) 远程过程调用
+
+通过网络从远程计算机程序上请求服务 Dubbo(阿里)、Spring Cloud(Spring) 、grpc(Google)
+
+![image-20200703150553125](Netty-Demo.assets/image-20200703150553125.png)
+
+
+
+1. 服务消费方(client)以***本地调用方式***调用服务
+
+2. ***client stub*** 接收到调用后负责将***方法、参数***等封装成能够进行***网络传输***的***消息体***
+
+3. client stub 将消息进行***编码***并发送到服务端
+
+4. ***server stub*** 收到消息后进行***解码***
+
+5. server stub 根据解码结果***调用本地的服务***
+
+6. 本地服务执行并将结果***返回给 server stub***
+
+7. server stub 将返回导入结果进行***编码***并发送至消费方
+
+8. client stub 接收到消息并进行***解码***
+
+9. 服务消费方(client)***得到结果***
+
+   
+
+   RPC 的目标就是将 2-8 这些步骤都封装起来,用户无需关心细节(就好像是在调用本地的服务一样)
+
+
+
+##### 基于Netty的RPC
+
+![image-20200703151409402](Netty-Demo.assets/image-20200703151409402.png)
+
+
+
+- Client(服务的调用方): 两个接口 + 一个包含 main 方法的测试类
+- Client Stub: 一个客户端代理类 + 一个客户端业务处理类
+- Server(服务的提供方): 两个接口 + 两个实现类
+
+- Server Stub: 一个网络处理服务器 + 一个服务器业务处理类
+
+
+
+注意:服务调用接口必须和服务提供方调用的接口保持一致(包路径可以不一致)
+
+***实现目标:*** 在TestNettyRPC中 远程调用HelloRPCIml 和 HelloNettyImpl 中的方法
+
+代码见com.abelrose.rpcs
+
+server 提供两个接口和实现类供client 调用
+
+serverstub 
+
+- ClassInfo 作为实体类用来封装消费方发起远程调用时传给服务方的数据。
+- NettyRPCServer  用Netty实现网络服务器 用自带的ObjectEncoder 和 ObjectDecoder 作为编解码器(为了降低复杂度)
+
+clientStub 
+
+- ResultHandlers  作为客户端的业务处理类读取远程调用返回的数据
+- NettyRPCProxy  用 Netty 实现的客户端代理类,采用 Netty 自带的 ObjectEncoder 和 ObjectDecoder 作为编解码器(为了降低复杂度,这里并没有使用第三方的编解码器)
+
+client  消费方不需要知道底层的网络实现细节,就像调用本地方法一样成功发起了两次远程调用。

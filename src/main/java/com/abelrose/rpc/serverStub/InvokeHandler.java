@@ -3,7 +3,6 @@ package com.abelrose.rpc.serverStub;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.reflections.Reflections;
-
 import java.lang.reflect.Method;
 import java.util.Set;
 
@@ -12,7 +11,7 @@ public class InvokeHandler extends ChannelInboundHandlerAdapter {
     //得到某接口下某个实现类的名字
     private String getImplClassName(ClassInfo classInfo) throws Exception{
         //服务方接口和实现类所在的包路径
-        String interfacePath="cn.itcast.rpc.server";
+        String interfacePath="cn.abelrose.rpc.server";
         int lastDot = classInfo.getClassName().lastIndexOf(".");
         String interfaceName=classInfo.getClassName().substring(lastDot);
         Class superClass=Class.forName(interfacePath+interfaceName);

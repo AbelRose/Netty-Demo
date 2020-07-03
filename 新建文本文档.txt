@@ -1,3 +1,0 @@
-client 的HelloNetty 和 HelloRPC 
-server 的HelloNetty 和 HelloRPC
-必须是一样的 
